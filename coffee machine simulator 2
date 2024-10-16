@@ -1,1 +1,174 @@
-a
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+// Defined constants for ingredients and password
+#define ESPRESSO_COFFEE_BEANS 8
+#define ESPRESSO_WATER 30
+
+#define CAPPUCCINO_COFFEE_BEANS 8
+#define CAPPUCCINO_WATER 30
+#define CAPPUCCINO_MILK 70
+
+#define MOCHA_COFFEE_BEANS 8
+#define MOCHA_WATER 39
+#define MOCHA_MILK 160
+#define MOCHA_SYRUP 30
+
+#define LOW_THRESHOLD 10 // Example low ingredient threshold
+#define ADMIN_PASSWORD 1234
+
+// Global variables for ingredient levels and total sales
+float total_amount = 0;
+int coffee_beans = 50, water = 200, milk = 100, syrup = 50;
+float espresso_price = 3.5, cappuccino_price = 4.5, mocha_price = 5.5;
+
+// Function prototypes
+void display_menu();
+void order_coffee();
+void admin_mode();
+void replenish_ingredients();
+void display_ingredients();
+void change_prices();
+void check_ingredient_levels();
+void reset_sales();
+
+// Main function
+int main() {
+    int choice;
+
+    while (1) {
+        display_menu();
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                order_coffee();
+                break;
+            case 2:
+                admin_mode();
+                break;
+            case 3:
+                printf("Exiting... \n");
+                exit(0);
+            default:
+                printf("Invalid option. Please try again.\n");
+        }
+    }
+
+    return 0;
+}
+
+// Function to display the main menu
+void display_menu() {
+    printf("\n-- Coffee Maker Simulator --\n");
+    printf("1. Order a coffee\n");
+    printf("2. Admin mode\n");
+    printf("3. Exit\n");
+    printf("Enter your choice: ");
+}
+
+// Function to handle coffee orders with change calculation and confirmation prompt
+void order_coffee() {
+    int choice;
+    float payment = 0, price = 0;
+    char confirm;
+
+    while (1) {
+        printf("\n-- Coffee Menu --\n");
+        printf("1. Espresso - AED %.2f\n", espresso_price);
+        printf("2. Cappuccino - AED %.2f\n", cappuccino_price);
+        printf("3. Mocha - AED %.2f\n", mocha_price);
+        printf("0. Cancel\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        // Check which coffee type was selected and set the price and ingredients
+        switch (choice) {
+            case 1:
+                if (coffee_beans >= ESPRESSO_COFFEE_BEANS && water >= ESPRESSO_WATER) {
+                    price = espresso_price;
+                    printf("You selected Espresso. Price: AED %.2f\n", price);
+                } else {
+                    printf("Unavailable due to insufficient ingredients.\n");
+                    return;
+                }
+                break;
+            case 2:
+                if (coffee_beans >= CAPPUCCINO_COFFEE_BEANS && water >= CAPPUCCINO_WATER && milk >= CAPPUCCINO_MILK) {
+                    price =cappuccino_price;
+printf("You selected Cappuccino. Price: AED %.2f\n", price);
+                } else {
+                    printf("Unavailable due to insufficient ingredients.\n");
+                    return;
+                }
+                break;
+            case 3:
+                if (coffee_beans >= MOCHA_COFFEE_BEANS && water >= MOCHA_WATER && milk >= MOCHA_MILK && syrup >= MOCHA_SYRUP) {
+                    price = mocha_price;
+                    printf("You selected Mocha. Price: AED %.2f\n", price);
+                } else {
+                    printf("Unavailable due to insufficient ingredients.\n");
+                    return;
+                }
+                break;
+            case 0:
+                return;  // Exit function if user cancels
+            default:
+                printf("Invalid choice. Please try again.\n");
+                continue;
+        }
+         // Asking for confirmation
+        printf("Do you confirm your selection? (y/n): ");
+        scanf(" %c", &confirm);  // Space before %c to consume any trailing newline character
+
+        if (confirm == 'n' || confirm == 'N') {
+            printf("Selection not confirmed. Returning to menu...\n");
+            continue;  // Go back to the menu if not confirmed
+        }
+        // If confirmed, continue with the payment process
+        printf("Please pay AED %.2f (1 AED and 0.5 AED coins only):\n", price);
+        while (payment < price) {
+            float coin;
+            scanf("%f", &coin);
+            if (coin == 1 || coin == 0.5) {
+                payment += coin;
+                printf("Paid: %.2f / %.2f\n", payment, price);
+            } else {
+                printf("Invalid coin! Please collect and insert a valid one.\n");
+            }
+        }
+        // Calculate and show change if payment is more than price
+        if (payment > price) {
+            printf("Your change is: AED %.2f\n", payment - price);
+        }
+
+        // Update ingredients and total sales
+        total_amount += price;
+         switch (choice) {
+            case 1:
+                coffee_beans -= ESPRESSO_COFFEE_BEANS;
+                water -= ESPRESSO_WATER;
+                break;
+            case 2:
+                coffee_beans -= CAPPUCCINO_COFFEE_BEANS;
+                water -= CAPPUCCINO_WATER;
+                milk -= CAPPUCCINO_MILK;
+                break;
+            case 3:
+                coffee_beans -= MOCHA_COFFEE_BEANS;
+                water -= MOCHA_WATER;
+                milk -= MOCHA_MILK;
+                syrup -= MOCHA_SYRUP;
+                break;
+        }
+
+        printf("Coffee ready! You paid AED %.2f.\n", payment);
+        check_ingredient_levels();
+        return;
+    }
+}
+
+                    
+                    
+
