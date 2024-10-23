@@ -169,6 +169,120 @@ printf("You selected Cappuccino. Price: AED %.2f\n", price);
     }
 }
 
-                    
-                    
+// Function to check ingredient levels and trigger alerts if below threshold
+void check_ingredient_levels() {
+    if (coffee_beans <= LOW_THRESHOLD) printf("Alert: Coffee beans running low!\n");
+    if (water <= LOW_THRESHOLD) printf("Alert: Water running low!\n");
+    if (milk <= LOW_THRESHOLD) printf("Alert: Milk running low!\n");
+    if (syrup <= LOW_THRESHOLD) printf("Alert: Syrup running low!\n");
+}
 
+// Admin mode functions
+void admin_mode() {
+    int password, choice;
+
+    printf("Enter admin password: ");
+    scanf("%d", &password);
+
+    if (password != ADMIN_PASSWORD) {
+        printf("Incorrect password!\n");
+        return;
+    }
+
+    while (1) {
+        printf("\n-- Admin Menu --\n");
+        printf("1. Display ingredients and total sales\n");
+        printf("2. Replenish ingredients\n");
+        printf("3. Change coffee prices\n");
+        printf("0. Exit Admin Mode\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                display_ingredients();
+                break;
+            case 2:
+                replenish_ingredients();
+                break;
+            case 3:
+                change_prices();
+                break;
+            case 0:
+                return;
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
+} 
+
+// Function to display ingredient levels and total sales
+void display_ingredients() {
+    printf("Coffee beans: %d grams\n", coffee_beans);
+    printf("Water: %d milliliters\n", water);
+    printf("Milk: %d milliliters\n", milk);
+    printf("Syrup: %d milliliters\n", syrup);
+    printf("Total sales: AED %.2f\n", total_amount);
+
+    // Prompt the admin to reset total sales
+    char reset;
+    printf("Would you like to reset total sales to zero? (y/n): ");
+    scanf(" %c", &reset);
+
+    if (reset == 'y' || reset == 'Y') {
+        total_amount = 0;
+        printf("Total sales reset. Please collect the money from the machine.\n");
+    }
+}
+
+// Function to replenish ingredients randomly
+void replenish_ingredients() {
+    srand(time(0));
+    coffee_beans = rand() % 70 + 100;
+    water = rand() % 200 + 300;
+    milk = rand() % 50 + 150;
+    syrup = rand() % 50 + 60;
+
+    printf("Ingredients replenished.\n");
+}
+
+// Function to allow admin to change coffee prices
+void change_prices() {
+    int choice;
+    float new_price;
+
+    while (1) {
+        printf("\n-- Change Coffee Prices --\n");
+        printf("1. Change Espresso price (current: AED %.2f)\n", espresso_price);
+        printf("2. Change Cappuccino price (current: AED %.2f)\n", cappuccino_price);
+        printf("3. Change Mocha price (current: AED %.2f)\n", mocha_price);
+        printf("0. Cancel\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        if (choice == 0) {
+            return;  // Exit if the admin chooses to cancel
+        }
+
+        printf("Enter new price: ");
+        scanf("%f", &new_price);
+
+        switch (choice) {
+            case 1:
+                espresso_price = new_price;
+                printf("Espresso price updated to AED %.2f\n", espresso_price);
+                break;
+            case 2:
+                cappuccino_price = new_price;
+                printf("Cappuccino price updated to AED %.2f\n", cappuccino_price);
+                break;
+            case 3:
+                mocha_price = new_price;
+                printf("Mocha price updated to AED %.2f\n", mocha_price);
+                break;
+            default:
+                printf("Invalid choice. Please try again.\n");
+                continue;
+        }
+    }
+}
